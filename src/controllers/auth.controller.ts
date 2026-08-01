@@ -5,46 +5,17 @@ export class AuthController {
 
     private authService = new AuthService();
 
-    home = (req: Request, res: Response) => {
-
-        const result = this.authService.getApiInfo();
-
-        return res.json(result);
-
-    }
-
-    health =(req: Request, res: Response) => {
-
-        const result = this.authService.getHealth();
+    usersCount = async (req: Request, res: Response) => {
+        const result = await this.authService.getUsersCount();
 
         return res.json(result);
-    }
+    };
 
-    version = (req: Request, res: Response) => {
+    registerUser = async (req: Request, res: Response) => {
+        const { name, email, password } = req.body;
 
-        const result = this.authService.getVersion();
+        const user = await this.authService.registerUser({ name, email, password });
 
-        return res.json(result);
-    }
-
-    about = (req: Request, res: Response) => {
-
-        const result = this.authService.getAbout();
-
-        return res.json(result);
-    }
-
-    ping = (req: Request, res: Response) => {
-
-        const result = this.authService.getPing();
-
-        return res.json(result);
-    }
-
-    time = (req: Request, res: Response) => {
-
-        const result = this.authService.getTime();
-
-        return res.json(result);
-    }
+        return res.status(201).json(user);
+    };
 };

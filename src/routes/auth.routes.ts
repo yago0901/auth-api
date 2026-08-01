@@ -5,16 +5,8 @@ const authRouter = Router();
 
 const authController = new AuthController();
 
-authRouter.get("/", authController.home);
+authRouter.get("/users/count", authController.usersCount);
 
-authRouter.get("/health", authController.health);
-
-authRouter.get("/version", authController.version);
-
-authRouter.get("/about", authController.about);
-
-authRouter.get("/time", authController.time);
-
-authRouter.get("/ping", authController.ping);
+authRouter.post("/register", authController.registerUser);
 
 export default authRouter;
