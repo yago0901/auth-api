@@ -12,9 +12,9 @@ export class AuthController {
     };
 
     registerUser = async (req: Request, res: Response) => {
-        const { name, email, password } = req.body;
+        const { first_name, last_name, username, gender, email, password } = req.body;
 
-        const user = await this.authService.registerUser({ name, email, password });
+        const user = await this.authService.registerUser({ first_name, last_name, username, gender, email, password });
 
         return res.status(201).json(user);
     };

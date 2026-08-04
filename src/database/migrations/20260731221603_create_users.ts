@@ -1,25 +1,58 @@
 import type { Knex } from "knex";
 
+export async function up(
+    knex: Knex
+): Promise<void> {
+    await knex.schema.createTable(
+        "users",
+        (table) => {
+            table
+                .increments("id")
+                .primary();
 
-export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable("users", (table) => {
+            table
+                .string("first_name", 100)
+                .notNullable();
 
-        table.increments("id").primary();
+            table
+                .string("last_name", 100)
+                .notNullable();
 
-        table.string("name").notNullable().unique();
+            table
+                .string("username", 30)
+                .notNullable()
+                .unique();
 
-        table.string("email").notNullable().unique();
+            table
+                .string("gender", 30)
+                .notNullable();
 
-        table.string("password_hash").notNullable();
+            table
+                .string("email", 255)
+                .notNullable()
+                .unique();
 
-        table.timestamp("created_at").defaultTo(knex.fn.now());
+            table
+                .string("password_hash")
+                .notNullable();
 
-        table.timestamp("updated_at").defaultTo(knex.fn.now());
-    });
+            table
+                .timestamp("created_at")
+                .notNullable()
+                .defaultTo(knex.fn.now());
+
+            table
+                .timestamp("updated_at")
+                .notNullable()
+                .defaultTo(knex.fn.now());
+        }
+    );
 }
 
-
-export async function down(knex: Knex): Promise<void> {
-    await knex.schema.dropTable("users");
+export async function down(
+    knex: Knex
+): Promise<void> {
+    await knex.schema.dropTableIfExists(
+        "users"
+    );
 }
-
