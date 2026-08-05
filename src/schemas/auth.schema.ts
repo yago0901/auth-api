@@ -35,3 +35,31 @@ export const registerUserSchema = z.object({
         .min(8, "A senha deve ter pelo menos 8 caracteres")
         .max(72, "A senha deve ter no máximo 72 caracteres"),
 });
+
+export const loginSchema = z.object({
+    username: z
+        .string()
+        .trim()
+        .min(
+            3,
+            "Username must have at least 3 characters"
+        )
+        .max(
+            30,
+            "Username must have at most 30 characters"
+        ),
+
+    password: z
+        .string()
+        .min(
+            8,
+            "Password must have at least 8 characters"
+        )
+        .max(
+            72,
+            "Password must have at most 72 characters"
+        ),
+});
+
+export type LoginInput =
+    z.infer<typeof loginSchema>;

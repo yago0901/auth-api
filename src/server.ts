@@ -1,8 +1,6 @@
-import doenv from "dotenv";
+import "dotenv/config";
 import app from "./app.js";
 import database from "./database/knex.js";
-
-doenv.config();
 
 const PORT = process.env.PORT || 3000;
 

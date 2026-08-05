@@ -1,6 +1,6 @@
 export interface CreateUserData {
     first_name: string;
-    last_name: string;    
+    last_name: string;
     username: string;
     gender: string;
     email: string;
@@ -26,4 +26,9 @@ export interface User {
     password_hash: string;
     created_at: string;
     updated_at: string;
+}
+
+export interface LoginData {
+    username: string;
+    password: string;
 }

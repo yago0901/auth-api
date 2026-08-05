@@ -3,10 +3,12 @@ import bcrypt from "bcrypt";
 import { UserRepository } from "../repositories/user.repository.js";
 import { CreateUserData } from "../types/user.types.js";
 import { AppError } from "../errors/app-errors.js";
+import { TokenService } from "./token.service.js";
 
 export class AuthService {
 
     private userRepository = new UserRepository();
+    private tokenService = new TokenService();
 
     async getUsersCount() {
         const total = await this.userRepository.countUsers();
@@ -48,5 +50,38 @@ export class AuthService {
             email: user!.email,
             created_at: user!.created_at
         };
+    }
+
+    async login(username: string, password: string) {
+        const user = await this.userRepository.findUserByUsername(username);
+        const isPasswordValid = user ? await bcrypt.compare(password, user.password_hash) : false;
+
+        if (!user || !isPasswordValid) {
+            throw new AppError(
+                "Invalid username or password",
+                401,
+                "INVALID_CREDENTIALS"
+            );
+        }
+
+        const accessToken =
+            this.tokenService
+                .generateAccessToken(
+                    user.id
+                );
+
+        return {
+            user: {
+                id: user.id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                username: user.username,
+                gender: user.gender,
+                email: user.email,
+            },
+
+            accessToken,
+        };
+
     }
 };
