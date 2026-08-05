@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 
 import { UserRepository } from "../repositories/user.repository.js";
 import { CreateUserData } from "../types/user.types.js";
+import { AppError } from "../errors/app-errors.js";
 
 export class AuthService {
 
@@ -16,18 +17,22 @@ export class AuthService {
     }
 
     async registerUser({ first_name, last_name, username, gender, email, password }: CreateUserData) {
-        const existingUser = await this.userRepository.findUserByEmail(email);
+        const existingEmail = await this.userRepository.findUserByEmail(email);
         const existingUsername = await this.userRepository.findUserByUsername(username);
 
-        if (existingUser) {
-            throw new Error("User already exists");
-        }
-
         if (existingUsername) {
-            throw new Error(
-                "Este username já está em uso"
+            throw new AppError(
+                "Username already exists",
+                409
             );
         }
+        if (existingEmail) {
+            throw new AppError(
+                "Email already exists",
+                409
+            );
+        }
+
 
         const password_hash = await bcrypt.hash(password, 12);
         const user = await this.userRepository.createUser({ first_name, last_name, username, gender, email, password_hash });
