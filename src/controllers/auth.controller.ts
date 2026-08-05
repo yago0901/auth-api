@@ -27,4 +27,19 @@ export class AuthController {
         return res.status(200).json(result);
     };
 
+    profile = async (req: Request, res: Response) => {
+        const userId = req.userId;
+
+        if (!userId) {
+            throw new Error(
+                "User ID was not found"
+            );
+        }
+
+        const result = await this.authService.getProfile(userId);
+
+        return res.status(200).json(
+            result
+        );
+    };
 }

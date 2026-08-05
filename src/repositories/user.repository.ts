@@ -17,7 +17,7 @@ export class UserRepository {
 
         return user ?? null;
     }
-    
+
     async findUserByUsername(
         username: string
     ): Promise<User | null> {
@@ -28,6 +28,17 @@ export class UserRepository {
             .first();
 
         return user ?? null;
+    }
+
+    async findUserById( id: number ): Promise<User | null> {
+        const user =
+            await database<User>(
+                "users"
+            )
+                .where({ id })
+                .first();
+
+        return user || null;
     }
 
     async createUser(
