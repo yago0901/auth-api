@@ -22,14 +22,16 @@ export class AuthService {
 
         if (existingUsername) {
             throw new AppError(
-                "Username already exists",
-                409
+                "User already exists",
+                409,
+                "USER_ALREADY_EXISTS"
             );
         }
         if (existingEmail) {
             throw new AppError(
                 "Email already exists",
-                409
+                409,
+                "USERNAME_ALREADY_EXISTS"
             );
         }
 
