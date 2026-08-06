@@ -121,4 +121,67 @@ export class AuthService {
             },
         };
     }
+
+    async refresh(refreshToken: string) {
+
+        const refreshTokenHash = this.tokenService.hashRefreshToken(refreshToken);
+        const storedToken = await this.refreshTokenRepository.findByHash(refreshTokenHash);
+
+        if (!storedToken) {
+            throw new AppError(
+                "Invalid refresh token",
+                401,
+                "INVALID_REFRESH_TOKEN"
+            );
+        }
+
+        if (storedToken.revoked_at) {
+            throw new AppError(
+                "Refresh token revoked",
+                401,
+                "REFRESH_TOKEN_REVOKED"
+            );
+        }
+
+        if (
+            new Date(storedToken.expires_at) < new Date()
+        ) {
+            throw new AppError(
+                "Refresh token expired",
+                401,
+                "REFRESH_TOKEN_EXPIRED"
+            );
+        }
+
+        await this.refreshTokenRepository.revoke(
+            storedToken.id
+        );
+
+        const newRefreshToken = this.tokenService.generateRefreshToken();
+
+
+        const newRefreshTokenHash = this.tokenService.hashRefreshToken(newRefreshToken);
+
+
+        const expiresAt = this.tokenService
+            .getRefreshTokenExpirationDate();
+
+
+        await this.refreshTokenRepository.create({
+            user_id: storedToken.user_id,
+            token_hash: newRefreshTokenHash,
+            expires_at: expiresAt.toISOString(),
+        });
+
+        const accessToken =
+            this.tokenService.generateAccessToken(
+                storedToken.user_id
+            );
+
+
+        return {
+            accessToken,
+            refreshToken: newRefreshToken,
+        };
+    }
 };

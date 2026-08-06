@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service.js";
+import { TokenService } from "../services/token.service.js";
+import { RefreshTokenRepository } from "../repositories/refresh-token.repository.js";
 
 export class AuthController {
 
@@ -27,6 +29,27 @@ export class AuthController {
         return res.status(200).json(result);
     };
 
+    refresh = async (
+        req: Request,
+        res: Response
+    ) => {
+
+        const {
+            refreshToken
+        } = req.body;
+
+
+        const result =
+            await this.authService.refresh(
+                refreshToken
+            );
+
+
+        return res.status(200).json(
+            result
+        );
+    };
+
     profile = async (req: Request, res: Response) => {
         const userId = req.userId;
 
@@ -42,4 +65,5 @@ export class AuthController {
             result
         );
     };
+
 }
