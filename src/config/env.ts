@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 const jwtSecret = process.env.JWT_SECRET;
 
 if (!jwtSecret) {
@@ -6,4 +8,8 @@ if (!jwtSecret) {
     );
 }
 
-export const env = { jwtSecret, jwtExpiresIn: process.env.JWT_EXPIRES_IN || "1h", };
+const jwtExpiresIn = process.env.JWT_EXPIRES_IN || "1h";
+
+const refreshTokenExpiresInDays = Number( process.env.REFRESH_TOKEN_EXPIRES_IN_DAYS || 7 );
+
+export const env = { jwtSecret, jwtExpiresIn, refreshTokenExpiresInDays };
