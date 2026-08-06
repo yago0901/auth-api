@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service.js";
-import { TokenService } from "../services/token.service.js";
-import { RefreshTokenRepository } from "../repositories/refresh-token.repository.js";
+import { AppError } from "../errors/app-errors.js";
 
 export class AuthController {
 
@@ -54,8 +53,10 @@ export class AuthController {
         const userId = req.userId;
 
         if (!userId) {
-            throw new Error(
-                "User ID was not found"
+            throw new AppError(
+                "User ID was not found",
+                401,
+                "USER_ID_NOT_FOUND"
             );
         }
 

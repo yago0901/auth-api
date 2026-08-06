@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/auth.controller.js";
 import { validateUser } from "../middlewares/validade.middleware.js";
-import { loginSchema, registerUserSchema } from "../schemas/auth.schema.js";
+import { loginSchema, registerUserSchema, refreshSchema, logoutSchema } from "../schemas/auth.schema.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const authRouter = Router();
@@ -16,8 +16,8 @@ authRouter.post("/login", validateUser(loginSchema), authController.login);
 
 authRouter.get("/profile", authMiddleware, authController.profile);
 
-authRouter.post("/refresh", authController.refresh);
+authRouter.post("/refresh", validateUser(refreshSchema), authController.refresh);
 
-authRouter.post("/logout", authController.logout);
+authRouter.post("/logout", validateUser(logoutSchema), authController.logout);
 
 export default authRouter;
