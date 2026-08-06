@@ -2,6 +2,7 @@ import database from "../database/knex.js";
 import { RefreshToken } from "../types/refresh-token.types.js";
 
 export class RefreshTokenRepository {
+    
     async create(token: Omit<RefreshToken, "id" | "created_at" | "revoked_at">): Promise<RefreshToken> {
 
         const [refreshToken] = await

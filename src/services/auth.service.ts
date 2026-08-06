@@ -184,4 +184,26 @@ export class AuthService {
             refreshToken: newRefreshToken,
         };
     }
+
+    async logout(refreshToken: string) {
+
+        const refreshTokenHash = this.tokenService.hashRefreshToken(refreshToken);
+        const storedToken = await this.refreshTokenRepository.findByHash(refreshTokenHash);
+
+        if (!storedToken) {
+            throw new AppError(
+                "Invalid refresh token",
+                401,
+                "INVALID_REFRESH_TOKEN"
+            );
+        }
+
+        if (storedToken.revoked_at) {
+            return;
+        }
+
+        await this.refreshTokenRepository.revoke(
+            storedToken.id
+        );
+    }
 };

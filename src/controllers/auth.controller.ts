@@ -66,4 +66,17 @@ export class AuthController {
         );
     };
 
+    logout = async (req: Request, res: Response) => {
+
+        const { refreshToken } = req.body;
+
+        await this.authService.logout(
+            refreshToken
+        );
+
+        return res.status(200).json({
+            message: "Logout successful",
+        });
+    };
+
 }
