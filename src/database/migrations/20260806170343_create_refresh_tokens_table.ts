@@ -18,7 +18,7 @@ export async function up(knex: Knex): Promise<void> {
             .onDelete("CASCADE");
 
         table
-            .string("token")
+            .string("token_hash")
             .notNullable();
 
         table

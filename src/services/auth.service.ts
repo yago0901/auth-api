@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 
 import { UserRepository } from "../repositories/user.repository.js";
+import { RefreshTokenRepository } from "../repositories/refresh-token.repository.js";
 import { CreateUserData } from "../types/user.types.js";
 import { AppError } from "../errors/app-errors.js";
 import { TokenService } from "./token.service.js";
@@ -9,6 +10,7 @@ export class AuthService {
 
     private userRepository = new UserRepository();
     private tokenService = new TokenService();
+    private refreshTokenRepository = new RefreshTokenRepository();
 
     async getUsersCount() {
         const total = await this.userRepository.countUsers();
@@ -64,11 +66,23 @@ export class AuthService {
             );
         }
 
-        const accessToken =
-            this.tokenService
-                .generateAccessToken(
-                    user.id
-                );
+        const accessToken = this.tokenService
+            .generateAccessToken(user.id);
+
+        const refreshToken = this.tokenService
+            .generateRefreshToken();
+
+        const refreshTokenHash = this.tokenService
+            .hashRefreshToken(refreshToken);
+
+        const expiresAt = this.tokenService
+            .getRefreshTokenExpirationDate();
+
+        await this.refreshTokenRepository.create({
+            user_id: user.id,
+            token_hash: refreshTokenHash,
+            expires_at: expiresAt.toISOString(),
+        });
 
         return {
             user: {
@@ -81,6 +95,7 @@ export class AuthService {
             },
 
             accessToken,
+            refreshToken,
         };
 
     }
