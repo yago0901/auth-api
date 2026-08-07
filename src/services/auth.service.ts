@@ -5,6 +5,7 @@ import { RefreshTokenRepository } from "../repositories/refresh-token.repository
 import { CreateUserData } from "../types/user.types.js";
 import { AppError } from "../errors/app-errors.js";
 import { TokenService } from "./token.service.js";
+import { toUserResponseDTO } from "../dto/user-response.dto.js";
 
 export class AuthService {
 
@@ -43,15 +44,7 @@ export class AuthService {
         const password_hash = await bcrypt.hash(password, 12);
         const user = await this.userRepository.createUser({ first_name, last_name, username, gender, email, password_hash });
 
-        return {
-            id: user!.id,
-            first_name: user!.first_name,
-            last_name: user.last_name,
-            username: user.username,
-            gender: user.gender,
-            email: user!.email,
-            created_at: user!.created_at
-        };
+        return toUserResponseDTO(user!);
     }
 
     async login(username: string, password: string) {
@@ -85,15 +78,7 @@ export class AuthService {
         });
 
         return {
-            user: {
-                id: user.id,
-                first_name: user.first_name,
-                last_name: user.last_name,
-                username: user.username,
-                gender: user.gender,
-                email: user.email,
-            },
-
+            user: toUserResponseDTO(user),
             accessToken,
             refreshToken,
         };
@@ -110,15 +95,7 @@ export class AuthService {
             );
         }
         return {
-            user: {
-                id: user.id,
-                first_name: user.first_name,
-                last_name: user.last_name,
-                username: user.username,
-                gender: user.gender,
-                email: user.email,
-                created_at: user.created_at,
-            },
+            user: toUserResponseDTO(user),
         };
     }
 

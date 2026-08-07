@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service.js";
-import { AppError } from "../errors/app-errors.js";
-import { ok } from "../utils/http-response.js";
+import { sendSuccess  } from "../utils/http-response.js";
+import { AuthenticatedRequest } from "../types/authenticated-request.js";
 
 export class AuthController {
 
@@ -10,7 +10,7 @@ export class AuthController {
     usersCount = async (req: Request, res: Response) => {
         const result = await this.authService.getUsersCount();
 
-        return ok(res, result);;
+        return sendSuccess(res, result);;
     };
 
     registerUser = async (req: Request, res: Response) => {
@@ -18,7 +18,7 @@ export class AuthController {
 
         const user = await this.authService.registerUser({ first_name, last_name, username, gender, email, password });
 
-        return ok(res, user, 201);;
+        return sendSuccess(res, user, 201);
     };
 
     login = async (req: Request, res: Response) => {
@@ -26,32 +26,21 @@ export class AuthController {
 
         const result = await this.authService.login(username, password);
 
-        return ok(res, result);;
+        return sendSuccess(res, result);;
     };
 
     refresh = async (req: Request, res: Response) => {
 
-        const { refreshToken} = req.body;
+        const { refreshToken } = req.body;
 
-        const result = await this.authService.refresh( refreshToken);
+        const result = await this.authService.refresh(refreshToken);
 
-        return ok(res, result);
+        return sendSuccess(res, result);
     };
 
-    profile = async (req: Request, res: Response) => {
-        const userId = req.userId;
-
-        if (!userId) {
-            throw new AppError(
-                "User ID was not found",
-                401,
-                "USER_ID_NOT_FOUND"
-            );
-        }
-
-        const result = await this.authService.getProfile(userId);
-
-        return ok(res, result);
+    profile = async (req: AuthenticatedRequest, res: Response) => {
+        const result = await this.authService.getProfile(req.userId);
+        return sendSuccess(res, result);
     };
 
     logout = async (req: Request, res: Response) => {
@@ -62,7 +51,7 @@ export class AuthController {
             refreshToken
         );
 
-        return ok(res, { message: "Logout successful" });
+        return sendSuccess(res, { message: "Logout successful" });
     };
 
 }
