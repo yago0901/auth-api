@@ -38,8 +38,10 @@ export class AuthController {
         return sendSuccess(res, result);
     };
 
-    profile = async (req: AuthenticatedRequest, res: Response) => {
-        const result = await this.authService.getProfile(req.userId);
+    profile = async (req: Request, res: Response) => {
+        const { userId } = req as AuthenticatedRequest;
+
+        const result = await this.authService.getProfile(userId);
         return sendSuccess(res, result);
     };
 
