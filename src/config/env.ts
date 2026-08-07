@@ -12,4 +12,6 @@ const jwtExpiresIn = process.env.JWT_EXPIRES_IN || "1h";
 
 const refreshTokenExpiresInDays = Number( process.env.REFRESH_TOKEN_EXPIRES_IN_DAYS || 7 );
 
-export const env = { jwtSecret, jwtExpiresIn, refreshTokenExpiresInDays };
+const allowedOrigin = process.env.ALLOWED_ORIGIN || "http://localhost:3030";
+
+export const env = { jwtSecret, jwtExpiresIn, refreshTokenExpiresInDays, allowedOrigin };
