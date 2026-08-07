@@ -10,7 +10,8 @@ export function validateUser(schema: ZodType) {
             throw new AppError(
                 "Validation error",
                 400,
-                "VALIDATION_ERROR"
+                "VALIDATION_ERROR",
+                result.error.flatten().fieldErrors
             );
         }
 
