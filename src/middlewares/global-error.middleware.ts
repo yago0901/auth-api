@@ -5,6 +5,7 @@ export function globalErrorHandler(error: Error, req: Request, res: Response, ne
 
     if (error instanceof AppError) {
         return res.status(error.statusCode).json({
+            success: false,
             error: {
                 message: error.message,
                 code: error.code,
@@ -16,6 +17,7 @@ export function globalErrorHandler(error: Error, req: Request, res: Response, ne
     console.error(error);
 
     return res.status(500).json({
+        success: false,
         error: {
             message: "Internal server error",
             code: "INTERNAL_SERVER_ERROR",

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service.js";
 import { AppError } from "../errors/app-errors.js";
+import { ok } from "../utils/http-response.js";
 
 export class AuthController {
 
@@ -9,7 +10,7 @@ export class AuthController {
     usersCount = async (req: Request, res: Response) => {
         const result = await this.authService.getUsersCount();
 
-        return res.json(result);
+        return ok(res, result);;
     };
 
     registerUser = async (req: Request, res: Response) => {
@@ -17,7 +18,7 @@ export class AuthController {
 
         const user = await this.authService.registerUser({ first_name, last_name, username, gender, email, password });
 
-        return res.status(201).json(user);
+        return ok(res, user, 201);;
     };
 
     login = async (req: Request, res: Response) => {
@@ -25,28 +26,16 @@ export class AuthController {
 
         const result = await this.authService.login(username, password);
 
-        return res.status(200).json(result);
+        return ok(res, result);;
     };
 
-    refresh = async (
-        req: Request,
-        res: Response
-    ) => {
+    refresh = async (req: Request, res: Response) => {
 
-        const {
-            refreshToken
-        } = req.body;
+        const { refreshToken} = req.body;
 
+        const result = await this.authService.refresh( refreshToken);
 
-        const result =
-            await this.authService.refresh(
-                refreshToken
-            );
-
-
-        return res.status(200).json(
-            result
-        );
+        return ok(res, result);
     };
 
     profile = async (req: Request, res: Response) => {
@@ -62,9 +51,7 @@ export class AuthController {
 
         const result = await this.authService.getProfile(userId);
 
-        return res.status(200).json(
-            result
-        );
+        return ok(res, result);
     };
 
     logout = async (req: Request, res: Response) => {
@@ -75,9 +62,7 @@ export class AuthController {
             refreshToken
         );
 
-        return res.status(200).json({
-            message: "Logout successful",
-        });
+        return ok(res, { message: "Logout successful" });
     };
 
 }
