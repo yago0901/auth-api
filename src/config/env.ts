@@ -10,8 +10,10 @@ if (!jwtSecret) {
 
 const jwtExpiresIn = process.env.JWT_EXPIRES_IN || "1h";
 
-const refreshTokenExpiresInDays = Number( process.env.REFRESH_TOKEN_EXPIRES_IN_DAYS || 7 );
+const refreshTokenExpiresInDays = Number(process.env.REFRESH_TOKEN_EXPIRES_IN_DAYS || 7);
 
 const allowedOrigin = process.env.ALLOWED_ORIGIN || "http://localhost:3030";
 
-export const env = { jwtSecret, jwtExpiresIn, refreshTokenExpiresInDays, allowedOrigin };
+const isProduction = process.env.NODE_ENV === "production";
+
+export const env = { jwtSecret, jwtExpiresIn, refreshTokenExpiresInDays, allowedOrigin, isProduction };

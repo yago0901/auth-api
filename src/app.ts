@@ -1,6 +1,7 @@
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.routes.js";
 import { globalErrorHandler } from "./middlewares/global-error.middleware.js";
 import {env} from "./config/env.js";
@@ -13,6 +14,7 @@ app.use(cors({ origin: env.allowedOrigin }));
 app.use(generalLimiter);
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use(authRouter);
 

@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service.js";
-import { sendSuccess  } from "../utils/http-response.js";
+import { sendSuccess } from "../utils/http-response.js";
 import { AuthenticatedRequest } from "../types/authenticated-request.js";
+import { clearRefreshTokenCookie, setRefreshTokenCookie } from "../utils/cookie.js";
+import { AppError } from "../errors/app-errors.js";
 
 export class AuthController {
 
@@ -26,16 +28,28 @@ export class AuthController {
 
         const result = await this.authService.login(username, password);
 
-        return sendSuccess(res, result);;
+        setRefreshTokenCookie(res, result.refreshToken);
+
+        return sendSuccess(res, { user: result.user, accessToken: result.accessToken });
     };
 
     refresh = async (req: Request, res: Response) => {
 
-        const { refreshToken } = req.body;
+        const refreshToken = req.cookies?.refreshToken;
+
+        if (!refreshToken) {
+            throw new AppError(
+                "Refresh token is required",
+                401,
+                "REFRESH_TOKEN_REQUIRED"
+            );
+        }
 
         const result = await this.authService.refresh(refreshToken);
 
-        return sendSuccess(res, result);
+        setRefreshTokenCookie(res, result.refreshToken);
+
+        return sendSuccess(res, { accessToken: result.accessToken });
     };
 
     profile = async (req: Request, res: Response) => {
@@ -47,11 +61,19 @@ export class AuthController {
 
     logout = async (req: Request, res: Response) => {
 
-        const { refreshToken } = req.body;
+        const refreshToken = req.cookies?.refreshToken;
 
-        await this.authService.logout(
-            refreshToken
-        );
+        if (!refreshToken) {
+            throw new AppError(
+                "Refresh token is required",
+                401,
+                "REFRESH_TOKEN_REQUIRED"
+            );
+        }
+
+        await this.authService.logout(refreshToken);
+
+        clearRefreshTokenCookie(res);
 
         return sendSuccess(res, { message: "Logout successful" });
     };
