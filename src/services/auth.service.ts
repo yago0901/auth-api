@@ -36,7 +36,7 @@ export class AuthService {
             throw new AppError(
                 "Email already exists",
                 409,
-                "USERNAME_ALREADY_EXISTS"
+                "EMAIL_ALREADY_EXISTS"
             );
         }
 

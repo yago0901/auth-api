@@ -16,4 +16,12 @@ const allowedOrigin = process.env.ALLOWED_ORIGIN || "http://localhost:3030";
 
 const isProduction = process.env.NODE_ENV === "production";
 
-export const env = { jwtSecret, jwtExpiresIn, refreshTokenExpiresInDays, allowedOrigin, isProduction };
+const isTest = process.env.NODE_ENV === "test";
+
+if (isProduction && !process.env.ALLOWED_ORIGIN) {
+    throw new Error(
+        "ALLOWED_ORIGIN must be defined in production"
+    );
+}
+
+export const env = { jwtSecret, jwtExpiresIn, refreshTokenExpiresInDays, allowedOrigin, isProduction, isTest };

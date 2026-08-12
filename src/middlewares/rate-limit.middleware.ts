@@ -1,15 +1,16 @@
 import rateLimit from "express-rate-limit";
+import { env } from "../config/env.js";
 
 export const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 100,
+    max: env.isTest ? 10_000 : 100,
     standardHeaders: true,
     legacyHeaders: false,
 });
 
 export const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 5,
+    max: env.isTest ? 10_000 : 5,
     standardHeaders: true,
     legacyHeaders: false,
     message: {
