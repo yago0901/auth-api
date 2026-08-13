@@ -10,9 +10,9 @@ const database = knex({
         : env.databaseUrl,
     pool: { min: 0, max: 10 },
     migrations: {
-        directory: path.resolve(process.cwd(), "src/database/migrations"),
+        directory: path.resolve(process.cwd(), env.isProduction ? "dist/database/migrations" : "src/database/migrations"),
         extension: "ts",
-        loadExtensions: [".ts"],
+        loadExtensions: [env.isProduction ? ".js" : ".ts"],
     },
 });
 
