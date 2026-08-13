@@ -7,7 +7,7 @@ export interface UserResponseDTO {
     username: string;
     gender: string;
     email: string;
-    created_at: string;
+    created_at: Date;
 }
 
 export function toUserResponseDTO(user: User): UserResponseDTO {

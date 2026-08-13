@@ -24,4 +24,16 @@ if (isProduction && !process.env.ALLOWED_ORIGIN) {
     );
 }
 
-export const env = { jwtSecret, jwtExpiresIn, refreshTokenExpiresInDays, allowedOrigin, isProduction, isTest };
+const databaseUrl = isTest
+    ? process.env.DATABASE_URL_TEST
+    : process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+    throw new Error(
+        isTest
+            ? "DATABASE_URL_TEST is not defined"
+            : "DATABASE_URL is not defined"
+    );
+}
+
+export const env = { jwtSecret, jwtExpiresIn, refreshTokenExpiresInDays, allowedOrigin, isProduction, isTest, databaseUrl };

@@ -57,7 +57,7 @@ describe("POST /refresh", () => {
         const { refreshCookie } = await registerAndLogin();
 
         await database("refresh_tokens").update({
-            expires_at: new Date(Date.now() - 1000).toISOString(),
+            expires_at: new Date(Date.now() - 1000),
         });
 
         const response = await request(app)

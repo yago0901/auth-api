@@ -74,7 +74,7 @@ export class AuthService {
         await this.refreshTokenRepository.create({
             user_id: user.id,
             token_hash: refreshTokenHash,
-            expires_at: expiresAt.toISOString(),
+            expires_at: expiresAt,
         });
 
         return {
@@ -121,7 +121,7 @@ export class AuthService {
         }
 
         if (
-            new Date(storedToken.expires_at) < new Date()
+            storedToken.expires_at < new Date()
         ) {
             throw new AppError(
                 "Refresh token expired",
@@ -147,7 +147,7 @@ export class AuthService {
         await this.refreshTokenRepository.create({
             user_id: storedToken.user_id,
             token_hash: newRefreshTokenHash,
-            expires_at: expiresAt.toISOString(),
+            expires_at: expiresAt,
         });
 
         const accessToken =

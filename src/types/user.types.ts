@@ -24,8 +24,8 @@ export interface User {
     gender: string
     email: string;
     password_hash: string;
-    created_at: string;
-    updated_at: string;
+    created_at: Date;
+    updated_at: Date;
 }
 
 export interface LoginData {
